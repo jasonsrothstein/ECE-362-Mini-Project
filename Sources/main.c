@@ -34,24 +34,19 @@ void waitlevel(void);
 void selectDiff(void);
 
 /* Variable Declarations */
-char button1 = 0; //button flags
-char button2 = 0; //1-6 in left-to-right order
-char button3 = 0;
-char button4 = 0;
-char button5 = 0;
-char button6 = 0;
-/*char LED1 = 0;
-char LED2 = 0;        //may not be necessary
-char LED3 = 0;
-char LED4 = 0;
-char LED5 = 0;
-char LED6 = 0;*/
-char startbutton = 0;  //indicates button press for START
+char button1; //button flags
+char button2; //1-6 in left-to-right order
+char button3;
+char button4;
+char button5;
+char button6;
 
-char round = 0;        //round #. increments by 1 every time you correctly guess a complete sequence
-char guessround = 0;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
-char startflg = 1;     //start flag 
-char playflg = 0;
+char startbutton;  //indicates button press for START
+
+char round;        //round #. increments by 1 every time you correctly guess a complete sequence
+char guessround;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
+char startflg;     //start flag 
+char playflg;
 char sequence[250];
 
 char prev1;
@@ -225,7 +220,29 @@ void  initializations(void) {
  	send_i(LCDON);
   send_i(TWOLINE);
   send_i(LCDCLR);
-  lcdwait();		 		  			 		  		
+  lcdwait();	
+  
+  
+  //LEDs initially off
+  LED1 = LED_OFF;
+  LED2 = LED_OFF;
+  LED3 = LED_OFF;
+  LED4 = LED_OFF;
+  LED5 = LED_OFF;
+  LED6 = LED_OFF;
+  
+  //set flags
+  startflg = 1;
+  playflg = 0;
+  button1 = 0;
+  button2 = 0;
+  button3 = 0;
+  button4 = 0;
+  button5 = 0;
+  button6 = 0;
+  startbutton = 0;
+  round = 0;
+  guessround = 0;	 		  			 		  		
 	      
 }
 
@@ -246,8 +263,6 @@ void main(void) {
 
   for(;;) {
   
-  /* DIFFICULTY SELECTION AND START SEQUENCE */
-    
  
   /* BUTTON 1 PRESSED WHILE ENABLED */  
     if (button1 && playflg) {      //button push only counts when playflg on (like an enable)
@@ -428,16 +443,16 @@ interrupt 15 void TIM_ISR(void)
  	  tenthadder++;       //counts up intervals of 0.1 sec - used such that its only reset in wait function (or when it hits 255)
  	}
  	
- 	while (startflg) {    //startflg indicates phase before game starts
-      selectDiff();            //select difficulty (continuous)
-      if (startbutton) {
-        startflg = 0;         //exit loop when start button is pressed, and start game
-        round = 0;
-        generateOrder();   //come up with random sequence to match
-        dispround();        //display first round
-        playflg = 1;     //enable input
-        PWME = 0x01;     //enable PWM
-      }
+ 	if (startflg) {    //startflg indicates phase before game starts
+    selectDiff();            //select difficulty (continuous)
+    if (startbutton) {
+      startflg = 0;         //exit loop when start button is pressed, and start game
+      round = 0;
+      generateOrder();   //come up with random sequence to match
+      dispround();        //display first round
+      playflg = 1;     //enable input
+      PWME = 0x01;     //enable PWM
+    }
   }
  	
  	
