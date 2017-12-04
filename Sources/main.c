@@ -14,6 +14,7 @@ Port AD pins 1-6 for pushbutton inputs
 #include <hidef.h>      /* common defines and macros */
 #include "derivative.h"      /* derivative-specific definitions */
 #include <mc9s12c32.h>
+#include <stdlib.h>
 
 /* Declare all functions called from/after main here */
 void shiftout(char);
@@ -45,11 +46,11 @@ char LED3 = 0;
 char LED4 = 0;
 char LED5 = 0;
 char LED6 = 0;*/
-char startbutton = 0;
+char startbutton = 0;  //indicates button press for START
 
-char round = 0;
-char guessround = 0;
-char startflg = 1;
+char round = 0;        //round #. increments by 1 every time you correctly guess a complete sequence
+char guessround = 0;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
+char startflg = 1;     //start flag 
 char playflg = 0;
 char sequence[250];
 
@@ -109,6 +110,9 @@ char ind3 = 0;
 #define PB5 PTAD_PTAD5
 #define PB6 PTAD_PTAD6
 #define PBSTART PTAD_PTAD7
+
+#define LED_ON 0
+#define LED_OFF 1
 
 
 /* Other Configurations */ 
@@ -190,8 +194,8 @@ void  initializations(void) {
   PWMCLK = 0x01; //Set clock for PWM channel 0 to Scaled Clock A.
   PWMPRCLK = 0x07; //Clock A = 187.5kHz.
   PWMSCLA = 0x20; //Scaled Clock A = 2900Hz: ///By adjusting period: Frequency Range: 11.5-1460 Hz.///
-  PWMPER0 = 2; //1460 Hz
-  PWMDTY0 = 1;  //50% duty Cycle.
+  PWMPER0 = 0; //initially not set
+  PWMDTY0 = 0; //initially off
   MODRR = 0x01; //Set PWM channel 0 output on PTT0.
 
   
@@ -432,6 +436,7 @@ interrupt 15 void TIM_ISR(void)
         generateOrder();   //come up with random sequence to match
         dispround();        //display first round
         playflg = 1;     //enable input
+        PWME = 0x01;     //enable PWM
       }
   }
  	
@@ -535,32 +540,47 @@ void generateOrder() {  //generates random game sequence
 */
 void lightup(char button) { //momentary lights & sounds whenever button is pressed (our round sequence output)
   if (button == BUTTON_1) {
-    LED1 = 1;
+    LED1 = LED_ON;
     //play frequency 1
+    PWMPER0 = 28; //105 Hz
+    PWMDTY0 = 14;
   } else if (button == BUTTON_2) {
-    LED2 = 1;
+    LED2 = LED_ON;
     //play frequency 2
+    PWMPER0 = 14; //209 Hz
+    PWMDTY0 = 7;
   } else if (button == BUTTON_3) {
-    LED3 = 1;
+    LED3 = LED_ON;
     //play frequency 3
+    PWMPER0 = 10  // 293 Hz
+    PWMDTY0 = 5;
   } else if (button == BUTTON_4) {
-    LED4 = 1;
+    LED4 = LED_ON;
     //play frequency 4
+    PWMPER0 = 8;  //366 Hz
+    PWMDTY0 = 4;
   } else if (button == BUTTON_5) {
-    LED5 = 1;
+    LED5 = LED_ON;
     //play frequency 5
+    PWMPER0 = 6;  //488 Hz
+    PWMPER0 = 3;
   } else if (button == BUTTON_6) {
-    LED6 = 1;
+    LED6 = LED_ON;
     //play frequency 6
+    PWMPER0 = 4;  //732 Hz
+    PWMDTY0 = 2;
   }
+  
   waitlevel();
   
-  LED1 = 0; //reset lights to 0
-  LED2 = 0;
-  LED3 = 0;
-  LED4 = 0;
-  LED5 = 0;
-  LED6 = 0;
+  PWMDTY0 = 0;  //change duty cycle to 0% (pwm off)
+  
+  LED1 = LED_OFF; //reset lights to off
+  LED2 = LED_OFF;
+  LED3 = LED_OFF;
+  LED4 = LED_OFF;
+  LED5 = LED_OFF;
+  LED6 = LED_OFF;
 }
 
 
@@ -574,23 +594,23 @@ void win() {
   chgline(LINE1);
   pmsglcd("Correct!");
   
-  LED1 = 1; //all lights flash
-  LED2 = 1;
-  LED3 = 1;
-  LED4 = 1;
-  LED5 = 1;
-  LED6 = 1;
+  LED1 = LED_ON; //all lights flash
+  LED2 = LED_ON;
+  LED3 = LED_ON;
+  LED4 = LED_ON;
+  LED5 = LED_ON;
+  LED6 = LED_ON;
   //play 2-3 tone jingle
-  LED1 = 0;
-  LED2 = 0;
-  LED3 = 0;
-  LED4 = 0;
-  LED5 = 0;
-  LED6 = 0;
+  LED1 = LED_OFF;
+  LED2 = LED_OFF;
+  LED3 = LED_OFF;
+  LED4 = LED_OFF;
+  LED5 = LED_OFF;
+  LED6 = LED_OFF;
   
-  round++;
-  guessround = 0;
-  dispround();
+  round++; //increment round
+  guessround = 0;  //change guess index (within sequence) to zero
+  dispround();     //display next round LEDs
 }
 
 
@@ -603,11 +623,11 @@ void lose() {
   send_i(LCDCLR);   //failure message
   chgline(LINE1);
   pmsglcd("Game Over!");  
-  LED2 = 1;  //CHANGE HERE - only want RED lights to light up when you lose
-  LED5 = 1;
+  LED2 = LED_ON;  //CHANGE HERE - only want RED lights to light up when you lose
+  LED5 = LED_ON;
   //play error jingle
-  LED2 = 0;
-  LED5 = 0;
+  LED2 = LED_OFF;
+  LED5 = LED_OFF;
   chgline(LINE2);
   pmsglcd("Final Score: ");
   //same display round code as dispround function
