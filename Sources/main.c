@@ -552,7 +552,7 @@ void lightup(char button) { //momentary lights & sounds whenever button is press
   } else if (button == BUTTON_3) {
     LED3 = LED_ON;
     //play frequency 3
-    PWMPER0 = 10  // 293 Hz
+    PWMPER0 = 10;  // 293 Hz
     PWMDTY0 = 5;
   } else if (button == BUTTON_4) {
     LED4 = LED_ON;
