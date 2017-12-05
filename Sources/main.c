@@ -2,7 +2,6 @@
 ECE 362 MINI PROJECT CODE
 JASON ROTHSTEIN, JORDAN WARNE, DAVID PIMLEY
 "SIMON SAYS"
-
 PWM CH0 for Speaker
 ATD CH0 for Potentiometer (difficulty)
 RTI @ 2.048 ms (sample pushbuttons)
@@ -32,22 +31,30 @@ void dispround(void);
 void lightup(char);
 void waitlevel(void);
 void selectDiff(void);
+void noteSpace(void);
 
 /* Variable Declarations */
-char button1; //button flags
-char button2; //1-6 in left-to-right order
-char button3;
-char button4;
-char button5;
-char button6;
+char button1 = 0; //button flags
+char button2 = 0; //1-6 in left-to-right order
+char button3 = 0;
+char button4 = 0;
+char button5 = 0;
+char button6 = 0;
+/*char LED1 = 0;
+char LED2 = 0;        //may not be necessary
+char LED3 = 0;
+char LED4 = 0;
+char LED5 = 0;
+char LED6 = 0;*/
+char startbutton = 0;  //indicates button press for START
 
-char startbutton;  //indicates button press for START
+unsigned int timer = 0;
 
-char round;        //round #. increments by 1 every time you correctly guess a complete sequence
-char guessround;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
-char startflg;     //start flag 
-char playflg;
-char sequence[250];
+unsigned char round = 0;        //round #. increments by 1 every time you correctly guess a complete sequence
+unsigned char guessround = 0;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
+unsigned char startflg = 1;     //start flag 
+unsigned char playflg = 0;
+int sequence[99];
 
 char prev1;
 char prev2;
@@ -58,24 +65,24 @@ char prev6;
 char prevstart;
 
 unsigned char difficulty;
-unsigned char prev_difficulty = 0;
+unsigned int prev_difficulty = 300;
 
 char tenthflg = 0;
 char secflg = 0;
 char milli = 0;
 char tenth = 0;
-char tenthadder = 0;
+unsigned char tenthadder = 0;
 
 //globals //
-char hundreds1 = 0;
-char tens1 = 0;
-char ones1 = 0;    
-char hundreds2 = 0;
-char tens2 = 0;
-char ones2 = 0;
-char ind1 = 0;
-char ind2 = 0;
-char ind3 = 0;
+//unsigned char hundreds1 = 0;
+unsigned char tens1 = 0;
+unsigned char ones1 = 0;    
+//unsigned char hundreds2 = 0;
+unsigned char tens2 = 0;
+unsigned char ones2 = 0;
+unsigned char ind1 = 0;
+unsigned char ind2 = 0;
+unsigned char ind3 = 0;
 
 
 //#define DIF1 0x00
@@ -113,12 +120,12 @@ char ind3 = 0;
 /* Other Configurations */ 
 
 /* ASCII character definitions */
-#define CR 0x0D	// ASCII return character   
+#define CR 0x0D	// ASCII return character   
 
 /* LCD COMMUNICATION BIT MASKS */
-#define RS 0x04		// RS pin mask (PTT[2])
-#define RW 0x08		// R/W pin mask (PTT[3])
-#define LCDCLK 0x10	// LCD EN/CLK pin mask (PTT[4])
+#define RS 0x01		// RS pin mask (PTT[2])
+//#define RW 0x08		// R/W pin mask (PTT[3])
+#define LCDCLK 0x02	// LCD EN/CLK pin mask (PTT[4])
 
 /* LCD INSTRUCTION CHARACTERS */
 #define LCDON 0x0F	// LCD initialization command
@@ -157,7 +164,7 @@ void  initializations(void) {
   PORTB  =  0x10; //assert DTR pin on COM port
  
 /* Add additional port pin initializations here */
-   DDRM = 0xFF; //Set Port M pins 0 and 1 to Outputs.
+   DDRM = 0x3F; //Set Port M pins 0 and 1 to Outputs.
 
 /* Initialize SPI for baud rate of 6 Mbs */
    SPIBR = 0x01; //Set SPT Baud Rate to 6.25 Mbs 
@@ -184,7 +191,7 @@ void  initializations(void) {
 
 
 /* Initialize PWM Channel 0*/
-  PWME = 0x00; //Initially dissable PWM channel 0;
+  PWME = 0x01; //Initially enable PWM channel 0;
   PWMPOL = 0x01; //Set PWM channel 0 to positive polarity.
   PWMCLK = 0x01; //Set clock for PWM channel 0 to Scaled Clock A.
   PWMPRCLK = 0x07; //Clock A = 187.5kHz.
@@ -220,29 +227,16 @@ void  initializations(void) {
  	send_i(LCDON);
   send_i(TWOLINE);
   send_i(LCDCLR);
-  lcdwait();	
+  lcdwait();
   
   
-  //LEDs initially off
-  LED1 = LED_OFF;
+  LED1 = LED_OFF; //all LEDs initially off
   LED2 = LED_OFF;
   LED3 = LED_OFF;
   LED4 = LED_OFF;
   LED5 = LED_OFF;
   LED6 = LED_OFF;
-  
-  //set flags
-  startflg = 1;
-  playflg = 0;
-  button1 = 0;
-  button2 = 0;
-  button3 = 0;
-  button4 = 0;
-  button5 = 0;
-  button6 = 0;
-  startbutton = 0;
-  round = 0;
-  guessround = 0;	 		  			 		  		
+  TIE = 0x80;		  //enable timer interrupts		  			 		  		
 	      
 }
 
@@ -260,14 +254,15 @@ void main(void) {
   DisableInterrupts;
   initializations();
 	EnableInterrupts;
-
+  
   for(;;) {
   
+  /* DIFFICULTY SELECTION AND START SEQUENCE */
+    
  
   /* BUTTON 1 PRESSED WHILE ENABLED */  
     if (button1 && playflg) {      //button push only counts when playflg on (like an enable)
       button1 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_1);     //light & sound response
       if (BUTTON_1 == sequence[guessround]) {
         if (guessround == round) {
@@ -275,7 +270,6 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
@@ -284,7 +278,6 @@ void main(void) {
   /* BUTTON 2 PRESSED WHILE ENABLED */ 
     if (button2 && playflg) {      //button push only counts when playflg on (like an enable)
       button2 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_2);     //light & sound response
       if (BUTTON_2 == sequence[guessround]) {
         if (guessround == round) {
@@ -292,7 +285,6 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
@@ -301,7 +293,6 @@ void main(void) {
   /* BUTTON 3 PRESSED WHILE ENABLED */ 
     if (button3 && playflg) {      //button push only counts when playflg on (like an enable)
       button3 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_3);     //light & sound response
       if (BUTTON_3 == sequence[guessround]) {
         if (guessround == round) {
@@ -309,7 +300,6 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
@@ -318,7 +308,6 @@ void main(void) {
   /* BUTTON 4 PRESSED WHILE ENABLED */ 
     if (button4 && playflg) {      //button push only counts when playflg on (like an enable)
       button4 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_4);     //light & sound response
       if (BUTTON_4 == sequence[guessround]) {
         if (guessround == round) {
@@ -326,7 +315,6 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
@@ -335,7 +323,6 @@ void main(void) {
   /* BUTTON 5 PRESSED WHILE ENABLED */ 
     if (button5 && playflg) {      //button push only counts when playflg on (like an enable)
       button5 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_5);     //light & sound response
       if (BUTTON_5 == sequence[guessround]) {
         if (guessround == round) {
@@ -343,7 +330,6 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
@@ -352,7 +338,6 @@ void main(void) {
   /* BUTTON 6 PRESSED WHILE ENABLED */ 
     if (button6 && playflg) {      //button push only counts when playflg on (like an enable)
       button6 = 0;
-      playflg = 0;               //flag off while response actions occur
       lightup(BUTTON_6);     //light & sound response
       if (BUTTON_6 == sequence[guessround]) {
         if (guessround == round) {
@@ -360,14 +345,13 @@ void main(void) {
         } else {
           guessround++;        //correct guess, but pattern not done yet
         }
-        playflg = 1;       //enable input when still guessing
       } else {
         lose();
       }
     }
-                
     
-  } /* loop forever */
+    
+  }/* loop forever */
 }  /* never leave main */
 
 /*
@@ -380,39 +364,42 @@ void main(void) {
 interrupt 7 void RTI_ISR(void)
 {
   	// clear RTI interrupt flag
-  	CRGFLG = CRGFLG | 0x80; 
-  	if (PB1 < prev1) {     //sample each pushbutton (not RESET)
-  	  button1 = 1;         //set button flag
-  	}
-  	prev1 = PB1;
+  	CRGFLG = CRGFLG | 0x80;
   	
-  	if (PB2 < prev2) {
-  	  button2= 1;
-  	}
-  	prev2 = PB2;
+  	if (playflg == 1) {  
+   	  if (PB1 < prev1) {     //sample each pushbutton (not RESET)
+   	    button1 = 1;         //set button flag
+  	  }
+  	  prev1 = PB1;
   	
-  	if (PB3 < prev3) {
-  	  button3= 1;
-  	}
-  	prev3 = PB3;
+  	  if (PB2 < prev2) {
+  	    button2= 1;
+  	  }
+  	  prev2 = PB2;
   	
-  	if (PB4 < prev4) {
-  	  button4= 1;
-  	}
-  	prev4 = PB4;
+  	  if (PB3 < prev3) {
+  	    button3= 1;
+  	  }
+  	  prev3 = PB3;
   	
-  	if (PB5 < prev5) {
-  	  button5= 1;
-  	}
-  	prev5 = PB5;
+  	  if (PB4 < prev4) {
+  	    button4= 1;
+  	  }
+  	  prev4 = PB4;
   	
-  	if (PB6 < prev6) {
-  	  button6= 1;
-  	}
-  	prev6 = PB6;
+  	  if (PB5 < prev5) {
+  	    button5= 1;
+  	  }
+  	  prev5 = PB5;
   	
-  	if (PBSTART < prevstart) {
-  	  startbutton= 1;
+  	  if (PB6 < prev6) {
+  	    button6= 1;
+  	  }
+  	  prev6 = PB6;
+  	}
+
+ 	  if (PBSTART < prevstart) {
+      startbutton= 1;
   	}
   	prevstart = PBSTART;
   
@@ -432,37 +419,34 @@ interrupt 15 void TIM_ISR(void)
  	TFLG1 = TFLG1 | 0x80; 
  		
  	milli++;              //coutns each ms
- 	if(milli == 100) {
- 	  tenth++;            //counts each 0.1 s
+ 	if(milli == 50) {
+ 	  //tenth++;            //counts each 0.1 s
  	  milli = 0;
- 	  tenthflg = 1;
- 	}
- 	if (tenth == 10) {
- 	  secflg = 1;
- 	  tenth = 0;
+ 	  //tenthflg = 1;
  	  tenthadder++;       //counts up intervals of 0.1 sec - used such that its only reset in wait function (or when it hits 255)
  	}
  	
- 	if (startflg) {    //startflg indicates phase before game starts
-    selectDiff();            //select difficulty (continuous)
-    if (startbutton) {
-      startflg = 0;         //exit loop when start button is pressed, and start game
-      round = 0;
-      generateOrder();   //come up with random sequence to match
-      dispround();        //display first round
-      playflg = 1;     //enable input
-      PWME = 0x01;     //enable PWM
-    }
-  }
- 	
- 	
- 	/*
- 	if((PTT & 0x7E) == 0x7E) {
- 	  PTT = PTT & ~0x7E;
- 	} else {
- 	  PTT = PTT | 0x7E;
+ 	timer++;
+ 	if (timer == 10000) {
+ 	  timer == 0;
  	}
- 	*/
+// 	if (tenth == 10) {
+ //	  secflg = 1;
+ 	//  tenth = 0;
+ 	  
+ //	}
+ 	
+ 	if (startflg) {    //startflg indicates phase before game starts
+      selectDiff();            //select difficulty (continuous)
+      if (startbutton) {
+        startflg = 0;         //exit loop when start button is pressed, and start game
+        startbutton = 0;   //Clear startbutton pressed flag.
+        round = 0;
+        generateOrder();   //come up with random sequence to match
+        dispround();        //display first round
+        playflg = 1;     //enable input
+      }
+  }
 }
 
 /***************************************************************************** 
@@ -479,7 +463,7 @@ void selectDiff() {          //uses potentiometer to select difficulty
   while (ATDSTAT0 == 0x00){
   }
   difficulty = ATDDR0H;
-  if ((prev_difficulty) / 40 != (difficulty / 40)){
+  if ((prev_difficulty / 40) != (difficulty / 40)){
       send_i(LCDCLR);
       chgline(LINE1);
       pmsglcd("Difficulty:");
@@ -509,24 +493,27 @@ void dispround() {
   send_i(LCDCLR);
   chgline(LINE2);
   pmsglcd("Round: ");
-  hundreds1 = ((round + 1) / 100) % 10; //digits of round score
+  //hundreds1 = ((round + 1) / 100) % 10; //digits of round score
   tens1 = ((round + 1) / 10) % 10; //round + 1 because it is an index (starts at 0)
-  ones1 = (round + 1) / 10;
-  if (hundreds1 > 0) {  //controls where digits are displayed based on magnitude of round
-    print_c(hundreds1 + 48);
-  }
-  if (tens1 > 0) {
+  ones1 = (round + 1) % 10;
+  //if (hundreds1 >= 0) {  //controls where digits are displayed based on magnitude of round
+  //  print_c(hundreds1 + 48);
+  //}
+  if (tens1 >= 0) {
     print_c(tens1 + 48);
   }
-  if (ones1 > 0) {
+  if (ones1 >= 0) {
     print_c(ones1 + 48);
   }
   chgline(LINE1);
   pmsglcd("Simon Says...");
   /* display round output on the lights */
+  ind1 = 0;
   for (ind1; ind1 <= round; ind1++) {
     lightup(sequence[ind1]);
-    waitlevel();
+    if (ind1 < round) {
+      waitlevel();
+    }
   }
   
   /* Tell user to start input */
@@ -534,6 +521,8 @@ void dispround() {
   pmsglcd("                ");
   chgline(LINE1);
   pmsglcd("Go!");
+  guessround = 0;
+  playflg = 1;
 }
   
   
@@ -542,9 +531,12 @@ void dispround() {
     EACH INDEX IS RANDOM 0-5 NUMBER
 */ 
 void generateOrder() {  //generates random game sequence
-  for (ind2; ind2 < 250; ind2++) {
+  ind2 = 0;
+  srand(timer);
+  for (ind2; ind2 < 99; ind2++) {
     sequence[ind2] = rand() % 6; //random number 0-5
   }
+  ind2 = 0;
 }
 
 
@@ -578,7 +570,7 @@ void lightup(char button) { //momentary lights & sounds whenever button is press
     LED5 = LED_ON;
     //play frequency 5
     PWMPER0 = 6;  //488 Hz
-    PWMPER0 = 3;
+    PWMDTY0 = 3;
   } else if (button == BUTTON_6) {
     LED6 = LED_ON;
     //play frequency 6
@@ -604,24 +596,35 @@ void lightup(char button) { //momentary lights & sounds whenever button is press
     INCREASES ROUND NUMBER AND DISPLAYS THE NEXT ROUND
 */
 void win() {
+  playflg = 0;
   chgline(LINE1);  //success message
   pmsglcd("                ");
   chgline(LINE1);
   pmsglcd("Correct!");
   
-  LED1 = LED_ON; //all lights flash
-  LED2 = LED_ON;
-  LED3 = LED_ON;
-  LED4 = LED_ON;
-  LED5 = LED_ON;
-  LED6 = LED_ON;
-  //play 2-3 tone jingle
-  LED1 = LED_OFF;
-  LED2 = LED_OFF;
-  LED3 = LED_OFF;
-  LED4 = LED_OFF;
-  LED5 = LED_OFF;
-  LED6 = LED_OFF;
+  //play short tone jingle
+  
+  PWMPER0 = 18;
+  PWMDTY0 = 9;
+  noteSpace();
+  PWMPER0 = 18;
+  PWMDTY0 = 9;
+  noteSpace();
+  PWMPER0 = 14;
+  PWMDTY0 = 7;
+  noteSpace();
+  PWMPER0 = 18;
+  PWMDTY0 = 9;
+  noteSpace();
+  PWMPER0 = 12;
+  PWMDTY0 = 6;
+  noteSpace();
+
+  
+  EnableInterrupts;
+  tenthadder = 0;
+  while (tenthadder != 5){
+  }
   
   round++; //increment round
   guessround = 0;  //change guess index (within sequence) to zero
@@ -635,27 +638,52 @@ void win() {
     DOES NOT SET PLAY FLAG AGAIN - USER CAN ONLY RESTART GAME WITH RESET BUTTON AT THIS POINT
 */
 void lose() {
+  playflg = 0;
   send_i(LCDCLR);   //failure message
   chgline(LINE1);
   pmsglcd("Game Over!");  
   LED2 = LED_ON;  //CHANGE HERE - only want RED lights to light up when you lose
   LED5 = LED_ON;
   //play error jingle
+  
+  PWMPER0 = 6;
+  PWMDTY0 = 3;
+  noteSpace();
+  PWMPER0 = 6;
+  PWMDTY0 = 3;
+  noteSpace();
+  PWMPER0 = 8;
+  PWMDTY0 = 4;
+  noteSpace();
+  PWMPER0 = 10;
+  PWMDTY0 = 5;
+  noteSpace();
+  PWMPER0 = 12;
+  PWMDTY0 = 6;
+  noteSpace();
+  PWMPER0 = 0;
+  PWMDTY0 = 0;
+  
+  EnableInterrupts;
+  tenthadder = 0;
+  while (tenthadder != 5){
+  }
+   
   LED2 = LED_OFF;
   LED5 = LED_OFF;
   chgline(LINE2);
   pmsglcd("Final Score: ");
   //same display round code as dispround function
-  hundreds2 = (round / 100) % 10; //digits of round score
+  //hundreds2 = (round / 100) % 10; //digits of round score
   tens2 = (round / 10) % 10; //round because need last COMPLETED round
-  ones2 = round / 10;
-  if (hundreds2 > 0) {  //controls where digits are displayed based on magnitude of round
-    print_c(hundreds2 + 48);
-  }
-  if (tens2 > 0) {
+  ones2 = round % 10;
+  //if (hundreds2 >= 0) {  //controls where digits are displayed based on magnitude of round
+  //  print_c(hundreds2 + 48);
+  //}
+  if (tens2 >= 0) {
     print_c(tens2 + 48);
   }
-  if (ones2 > 0) {
+  if (ones2 >= 0) {
     print_c(ones2 + 48);
   }
 }
@@ -665,24 +693,38 @@ void lose() {
     WAIT TIME DEPENDS ON LEVEL - HARDER LEVELS WAIT LESS
     WAIT DETERMINES LENGTH OF LED FLASH AND SOUND PULSE, AND SPEED AT WHICH PATTERN IS DISPLAYED
 */ 
-void waitlevel() {       
+void waitlevel() {  
+  EnableInterrupts;     
   if (difficulty > 200) {          //determine difficulty level given thresholds
     ind3 = 1;
   } else if (difficulty > 150) {
-    ind3 = 3;                          //i values are arbitrary - (i.e. i=5 waits 0.2*5= 1 second)
+    ind3 = 2;                          //i values are arbitrary - (i.e. i=5 waits 0.2*5= 1 second)
   } else if (difficulty > 100) {
-    ind3 = 5;
+    ind3 = 6;
   } else if (difficulty > 50) {
-    ind3 = 7;
+    ind3 = 10;
   } else {
-    ind3 = 9;
+    ind3 = 14;
   } 
     
   for (ind3; ind3 > 0; ind3--) {       ///difficulty determines how many times this runs
     tenthadder = 0;
-    while (tenthadder < 2) {   ///waits 0.2 sec
+    while (tenthadder != 1) {   ///waits 0.2 sec
     }
   }
+}
+
+void noteSpace(){
+  EnableInterrupts;
+  tenthadder = 0;
+  while (tenthadder != 4){
+  }
+  EnableInterrupts;
+  PWME = 0x00;
+  tenthadder = 0;
+  while (tenthadder != 4){
+  }
+  PWME = 0x01;
 }
   
 
@@ -705,11 +747,11 @@ void shiftout(char x)
   // write data x to SPI data register
   // wait for 30 cycles for SPI data to shift out 
 
-  int ind;
-  while (SPISR_SPTEF == 0) {
+  int loop = 0;
+  while ((SPISR & 0b00100000) == (0b00000000)){
   }
   SPIDR = x;
-  for (ind = 0; ind < 30; ind++) {
+  for (loop = 0; loop < 10; loop++){
   }
 }
 
@@ -721,8 +763,8 @@ void shiftout(char x)
 
 void lcdwait()
 {
-  int ind;
-  for (ind = 0; ind < 5000; ind++) {
+  int loop;
+  for (loop = 0; loop < 5000; loop++){
   }
 }
 
@@ -739,9 +781,9 @@ void send_byte(char x)
      // wait 2 ms for LCD to process data
   
   shiftout(x);
-  PTT_PTT6 = 0;
-  PTT_PTT6 = 1;
-  PTT_PTT6 = 0;
+  PTM = PTM & ~LCDCLK;
+  PTM = PTM | LCDCLK;
+  PTM = PTM & ~LCDCLK;
   lcdwait();
 }
 
@@ -755,7 +797,7 @@ void send_i(char x)
 {
         // set the register select line low (instruction data)
         // send byte
-  PTT_PTT4 = 0;
+  PTM = PTM & ~RS;
   send_byte(x);
 }
 
@@ -780,7 +822,7 @@ void chgline(char x)
  
 void print_c(char x)
 {
-  PTT_PTT4 = 1;
+  PTM = PTM | RS;
   send_byte(x);
 }
 
@@ -792,9 +834,8 @@ void print_c(char x)
 
 void pmsglcd(char str[])
 {
-  int ind;
-  ind = 0;
-  while (str[ind] != 0) {
+  int ind = 0;
+  while (str[ind] != '\0') {
     print_c(str[ind]);
     ind++;
   }
