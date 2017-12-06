@@ -28,10 +28,13 @@ void win(void);
 void lose(void);
 void generateOrder(void);
 void dispround(void);
-void lightup(char);
+void lightup(int);
 void waitlevel(void);
 void selectDiff(void);
+void selectMode(void);
 void noteSpace(void);
+void updateDisplay(void);
+void gameStart(void);
 
 /* Variable Declarations */
 char button1 = 0; //button flags
@@ -52,9 +55,19 @@ unsigned int timer = 0;
 
 unsigned char round = 0;        //round #. increments by 1 every time you correctly guess a complete sequence
 unsigned char guessround = 0;   //index variable to increment through the sequence array. indicates the current guess, from 0->round#
-unsigned char startflg = 1;     //start flag 
+unsigned char startflg = 0;     //start flag; if 1, the game start (difficulty select) prompt is running.
 unsigned char playflg = 0;
+unsigned char modeselectflg = 1;
+unsigned char gamemode = 0; //0-128 = Simon; 128-256 = Reaction.
+unsigned int prev_gamemode = 300;
 int sequence[99];
+                                      
+unsigned int player_marker = 0;
+unsigned int half_sequence = 1;
+unsigned int seq_position = 0;
+unsigned int temp_seq = 0;
+unsigned int refreshrate = 0;
+unsigned int dodgetimer = 0;
 
 char prev1;
 char prev2;
@@ -83,6 +96,7 @@ unsigned char ones2 = 0;
 unsigned char ind1 = 0;
 unsigned char ind2 = 0;
 unsigned char ind3 = 0;
+unsigned char ind4 = 0;
 unsigned char start_ind = 0;
 
 
@@ -259,99 +273,113 @@ void main(void) {
   for(;;) {
   
   /* DIFFICULTY SELECTION AND START SEQUENCE */
-    
- 
-  /* BUTTON 1 PRESSED WHILE ENABLED */  
-    if (button1 && playflg) {      //button push only counts when playflg on (like an enable)
-      button1 = 0;
-      lightup(BUTTON_1);     //light & sound response
-      if (BUTTON_1 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
-        }
-      } else {
-        lose();
-      }
-    }
+    if(playflg){
+      if(gamemode <= 128) { //if Simon game is selected,check buttons for Simon game.
+        /* BUTTON 1 PRESSED WHILE ENABLED */  
+          if (button1) {      //button push only counts when playflg on (like an enable)
+            button1 = 0;
+            lightup(BUTTON_1);     //light & sound response
+            if (BUTTON_1 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+                
+        /* BUTTON 2 PRESSED WHILE ENABLED */ 
+          if (button2) {      //button push only counts when playflg on (like an enable)
+            button2 = 0;
+            lightup(BUTTON_2);     //light & sound response
+            if (BUTTON_2 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+                 
+        /* BUTTON 3 PRESSED WHILE ENABLED */ 
+          if (button3) {      //button push only counts when playflg on (like an enable)
+            button3 = 0;
+            lightup(BUTTON_3);     //light & sound response
+            if (BUTTON_3 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+                 
+        /* BUTTON 4 PRESSED WHILE ENABLED */ 
+          if (button4) {      //button push only counts when playflg on (like an enable)
+            button4 = 0;
+            lightup(BUTTON_4);     //light & sound response
+            if (BUTTON_4 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+              
+        /* BUTTON 5 PRESSED WHILE ENABLED */ 
+          if (button5) {      //button push only counts when playflg on (like an enable)
+            button5 = 0;
+            lightup(BUTTON_5);     //light & sound response
+            if (BUTTON_5 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+               
+        /* BUTTON 6 PRESSED WHILE ENABLED */ 
+          if (button6) {      //button push only counts when playflg on (like an enable)
+            button6 = 0;
+            lightup(BUTTON_6);     //light & sound response
+            if (BUTTON_6 == sequence[guessround]) {
+              if (guessround == round) {
+                win();
+              } else {
+                guessround++;        //correct guess, but pattern not done yet
+              }
+            } else {
+              lose();
+            }
+          }
+      } else { //If not playing the Simon game, check buttons for Dodging Game. 
+       
+        if (button1 | button2 | button3 | button4 | button5 | button6) {      //if a button was pressed
+          button1 = 0;
+          button2 = 0;
+          button3 = 0;
+          button4 = 0;
+          button5 = 0;
+          button6 = 0;
           
-  /* BUTTON 2 PRESSED WHILE ENABLED */ 
-    if (button2 && playflg) {      //button push only counts when playflg on (like an enable)
-      button2 = 0;
-      lightup(BUTTON_2);     //light & sound response
-      if (BUTTON_2 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
+          player_marker = (player_marker + 1) % 2; //toggle player_marker marker
+          updateDisplay(); //Update the  display with the new player's position.
         }
-      } else {
-        lose();
       }
+      
     }
-           
-  /* BUTTON 3 PRESSED WHILE ENABLED */ 
-    if (button3 && playflg) {      //button push only counts when playflg on (like an enable)
-      button3 = 0;
-      lightup(BUTTON_3);     //light & sound response
-      if (BUTTON_3 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
-        }
-      } else {
-        lose();
-      }
-    }
-           
-  /* BUTTON 4 PRESSED WHILE ENABLED */ 
-    if (button4 && playflg) {      //button push only counts when playflg on (like an enable)
-      button4 = 0;
-      lightup(BUTTON_4);     //light & sound response
-      if (BUTTON_4 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
-        }
-      } else {
-        lose();
-      }
-    }
-        
-  /* BUTTON 5 PRESSED WHILE ENABLED */ 
-    if (button5 && playflg) {      //button push only counts when playflg on (like an enable)
-      button5 = 0;
-      lightup(BUTTON_5);     //light & sound response
-      if (BUTTON_5 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
-        }
-      } else {
-        lose();
-      }
-    }
-         
-  /* BUTTON 6 PRESSED WHILE ENABLED */ 
-    if (button6 && playflg) {      //button push only counts when playflg on (like an enable)
-      button6 = 0;
-      lightup(BUTTON_6);     //light & sound response
-      if (BUTTON_6 == sequence[guessround]) {
-        if (guessround == round) {
-          win();
-        } else {
-          guessround++;        //correct guess, but pattern not done yet
-        }
-      } else {
-        lose();
-      }
-    }
-    
-    
   }/* loop forever */
 }  /* never leave main */
 
@@ -421,31 +449,68 @@ interrupt 15 void TIM_ISR(void)
  		
  	milli++;              //coutns each ms
  	if(milli == 50) {
- 	  //tenth++;            //counts each 0.1 s
  	  milli = 0;
- 	  //tenthflg = 1;
  	  tenthadder++;       //counts up intervals of 0.1 sec - used such that its only reset in wait function (or when it hits 255)
  	}
- 	
+  
+  //timer is used to seed the random number generator.
  	timer++;
  	if (timer == 10000) {
  	  timer == 0;
  	}
-// 	if (tenth == 10) {
- //	  secflg = 1;
- 	//  tenth = 0;
- 	  
- //	}
+  
+  //Dodging game control
+  if(playflg && gamemode > 128) {  //If playing the Dodging game:
+   	dodgetimer++;
+    if((dodgetimer == refreshrate)) { //If the game is running and it is time to shift the obstacles down:
+   	  dodgetimer = 0;  //reset timer
+   	  half_sequence = (half_sequence + 1) % 2;
+   	  if(half_sequence == 1) {
+   	    seq_position++; 
+   	  }
+      if(seq_position > 98) {  //If you've reached the end of the series of obstacles:
+        playflg = 0;  //stop game.
+        send_i(LCDCLR); //print winning message
+        chgline(LINE1);
+        pmsglcd("YOU WIN!");
+      } else { //If you haven't won
+        updateDisplay();  //Shift the obstacles
+        if(!half_sequence && (player_marker == sequence[seq_position] / 3)) {  //If the player got hit by a block,
+          playflg = 0; //Stop the game
+          send_i(LCDCLR);  //Print losing message.
+          chgline(LINE1);
+          pmsglcd("YOU LOSE!");
+        }
+      }
+   	}
+ 	}
  	
  	if (startflg) {    //startflg indicates phase before game starts
       selectDiff();            //select difficulty (continuous)
       if (startbutton) {
-        startflg = 0;         //exit loop when start button is pressed, and start game
         startbutton = 0;   //Clear startbutton pressed flag.
-        round = 0;
-        generateOrder();   //come up with random sequence to match
-        dispround();        //display first round
-        playflg = 1;     //enable input
+        startflg = 0;         //exit loop when start button is pressed, and start game
+
+        if(gamemode <= 128) { //Initialize and run Simon Game.
+          round = 0;
+          generateOrder();   //come up with random sequence to match
+          dispround();        //display first round
+          playflg = 1;     //enable input
+        } else {            //initialize and run Reaction game.
+          generateOrder(); //Generate the sequence for the game
+          gameStart();		//Start Delay
+          playflg = 1;      //Enable the game.
+          updateDisplay();
+        }
+      }
+  }
+  
+  if (modeselectflg) {
+      selectMode();
+      if(startbutton) {
+        startbutton = 0;
+        startflg = 1; // Enter start mode (difficulty select mode)
+        modeselectflg = 0;//Exit game select mode
       }
   }
 }
@@ -471,17 +536,46 @@ void selectDiff() {          //uses potentiometer to select difficulty
       chgline(LINE2);
       if (difficulty > 200) {          //print difficulty as it is being selected
         pmsglcd("WTF");
+        refreshrate = 500;   //.5 second refresh rate for dodge game
       } else if (difficulty > 150) {
         pmsglcd("Pro");
+        refreshrate = 800;   //.8 second refresh rate for dodge game
       } else if (difficulty > 100) {
-        pmsglcd("Shmedium");
+        pmsglcd("Shmedium"); 
+        refreshrate = 1000;   //1 second refresh rate for dodge game
       } else if (difficulty > 50) {
         pmsglcd("Amateur");
+        refreshrate = 1200;  //1.2 second refresh rate for dodge game
       } else {
         pmsglcd("Chump");
+        refreshrate = 1500; //1.5 second refresh rate for dodge game
       }
   }
   prev_difficulty = difficulty;
+}
+
+/*  SELECT Mode FUNCTION
+    SAMPLES POTENTIOMETER AND COMPARES TO THRESHOLDS
+    PRINTS MODE TO LCD
+    CALLED CONTINUOUSLY BEFORE START BUTTON PRESS, NEVER AFTER
+*/
+void selectMode() {          //uses potentiometer to select game mode
+  ATDCTL5 = 0x00;
+  while (ATDSTAT0 == 0x00){
+  }
+  gamemode = ATDDR0H;
+  if ((prev_gamemode / 40) != (gamemode / 40)){
+      send_i(LCDCLR);
+      chgline(LINE1);
+      pmsglcd("Game:");
+      chgline(LINE2);
+      if (gamemode >= 128) {          //print game mode as it is being selected
+        pmsglcd("Dodge");
+      } else {
+        pmsglcd("Simon");
+      }
+  }
+  prev_gamemode = gamemode;
 }
 
 /*  DISPLAY ROUND FUNCTION
@@ -492,15 +586,7 @@ void selectDiff() {          //uses potentiometer to select difficulty
 void dispround() {
   /* display right round on LCD */
   if (round == 0){
-     for (start_ind = 3; start_ind > 0; start_ind--){
-        EnableInterrupts;
-        send_i(LCDCLR);
-        pmsglcd("Starts in: ");
-        print_c(start_ind + 48);
-        timer = 0;
-        while (timer != 1000){
-        }
-      }
+    gameStart();
   }
   send_i(LCDCLR);
   chgline(LINE2);
@@ -511,12 +597,8 @@ void dispround() {
   //if (hundreds1 >= 0) {  //controls where digits are displayed based on magnitude of round
   //  print_c(hundreds1 + 48);
   //}
-  if (tens1 >= 0) {
-    print_c(tens1 + 48);
-  }
-  if (ones1 >= 0) {
-    print_c(ones1 + 48);
-  }
+  print_c(tens1 + 48);
+  print_c(ones1 + 48);
   chgline(LINE1);
   pmsglcd("Simon Says...");
   /* display round output on the lights */
@@ -544,7 +626,7 @@ void dispround() {
 */ 
 void generateOrder() {  //generates random game sequence
   ind2 = 0;
-  srand(timer);
+  srand(timer);  //Seeds rand() with a psudorandom number
   for (ind2; ind2 < 99; ind2++) {
     sequence[ind2] = rand() % 6; //random number 0-5
   }
@@ -557,7 +639,7 @@ void generateOrder() {  //generates random game sequence
     PLAYS SOUND WITH EACH LIGHT
     AMOUNT OF TIME DETERMINED BY LEVEL FUNCTION
 */
-void lightup(char button) { //momentary lights & sounds whenever button is pressed (our round sequence output)
+void lightup(int button) { //momentary lights & sounds whenever button is pressed (our round sequence output)
   if (button == BUTTON_1) {
     LED1 = LED_ON;
     //play frequency 1
@@ -692,12 +774,9 @@ void lose() {
   //if (hundreds2 >= 0) {  //controls where digits are displayed based on magnitude of round
   //  print_c(hundreds2 + 48);
   //}
-  if (tens2 >= 0) {
-    print_c(tens2 + 48);
-  }
-  if (ones2 >= 0) {
-    print_c(ones2 + 48);
-  }
+  print_c(tens2 + 48);
+
+  print_c(ones2 + 48);
 }
  
  
@@ -738,6 +817,109 @@ void noteSpace(){
   }
   PWME = 0x01;
 }
+
+
+//UPDATE LCD DISPLAY FOR DODGING GAME
+void updateDisplay() {
+
+  temp_seq = 0;
+  send_i(LCDCLR); //Clear the LCD in preparation to write to it.
+  chgline(LINE1); //Print line 1
+  
+  if(half_sequence) {
+    if(player_marker == 1) {
+      print_c(0x7E);   //Print Player
+    } else {
+      print_c(0xFE);   //Print Blank
+    }
+  } else if(player_marker == 1 && sequence[seq_position + temp_seq] >= 3) {
+    print_c(0x2A);   //Print Obstacle
+    temp_seq++;  //increment sequence position
+  } else if(player_marker == 1) {
+    print_c(0x7E);   //Print Player
+    temp_seq++;  //increment sequence position
+  } else {
+    if(sequence[seq_position + temp_seq] >= 3) {
+      print_c(0x2A);    //Print Obstacle
+      temp_seq++;
+    } else { 
+      print_c(0xFE);    //Print Blank
+      temp_seq++;   //increment sequence position
+    }
+  }
+  half_sequence = (half_sequence + 1) % 2; //toggle half sequence
+  
+  for(ind4 = 0; ind4 < 15; ind4++) {
+    if(half_sequence) {
+      print_c(0xFE); //Print Blank 
+    } else {
+      if(sequence[seq_position + temp_seq] >= 3) {
+        print_c(0x2A);   //Print Obstacle
+      } else {
+        print_c(0xFE);   //Print Blank
+      }
+      temp_seq++; //increment sequence position
+    }
+    half_sequence = (half_sequence + 1) % 2; //toggle half sequence
+  }
+  
+  temp_seq = 0; //Reset seq_position.
+  
+  chgline(LINE2); //Print line 2
+  
+  if(half_sequence) {
+    if(player_marker == 0) {
+      print_c(0x7E);   //Print Player
+    } else {
+      print_c(0xFE);   //Print Blank
+    }
+  } else if(player_marker == 0 && sequence[seq_position + temp_seq] < 3) {
+    print_c(0x2A);   //Print Obstacle
+    temp_seq++;  //increment sequence position
+  } else if(player_marker == 0) {
+    print_c(0x7E);   //Print Player
+    temp_seq++;  //increment sequence position
+  } else {
+    if(sequence[seq_position + temp_seq] < 3) {
+      print_c(0x2A);    //Print Obstacle
+      temp_seq++;
+    } else { 
+      print_c(0xFE);    //Print Blank
+      temp_seq++;   //increment sequence position
+    }
+  }
+  half_sequence = (half_sequence + 1) % 2; //toggle half sequence
+  
+  for(ind4 = 0; ind4 < 15; ind4++) {
+    if(half_sequence) {
+      print_c(0xFE); //Print Blank 
+    } else {
+      if(sequence[seq_position + temp_seq] < 3) {
+        print_c(0x2A);   //Print Obstacle
+      } else {
+        print_c(0xFE);   //Print Blank
+      }
+      temp_seq++; //increment sequence position
+    }
+    half_sequence = (half_sequence + 1) % 2; //toggle half sequence
+  }
+    
+}
+
+void gameStart() 
+{
+ for (start_ind = 3; start_ind > 0; start_ind--){
+    EnableInterrupts;
+    send_i(LCDCLR);
+    chgline(LINE1);
+    lcdwait();
+    pmsglcd("Starts in: ");
+    print_c(start_ind + 48);
+    timer = 0;
+    while (timer != 1000){
+    }
+  }
+}
   
 
 
@@ -752,7 +934,6 @@ void noteSpace(){
 */
  
 void shiftout(char x)
-
 {
  
   // test the SPTEF bit: wait if 0; else, continue
