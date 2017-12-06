@@ -83,6 +83,7 @@ unsigned char ones2 = 0;
 unsigned char ind1 = 0;
 unsigned char ind2 = 0;
 unsigned char ind3 = 0;
+unsigned char start_ind = 0;
 
 
 //#define DIF1 0x00
@@ -490,6 +491,17 @@ void selectDiff() {          //uses potentiometer to select difficulty
 */
 void dispround() {
   /* display right round on LCD */
+  if (round == 0){
+     for (start_ind = 3; start_ind > 0; start_ind--){
+        EnableInterrupts;
+        send_i(LCDCLR);
+        pmsglcd("Starts in: ");
+        print_c(start_ind + 48);
+        timer = 0;
+        while (timer != 1000){
+        }
+      }
+  }
   send_i(LCDCLR);
   chgline(LINE2);
   pmsglcd("Round: ");
