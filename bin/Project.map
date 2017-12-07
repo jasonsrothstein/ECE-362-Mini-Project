@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\Jason\Documents\362 Project Jason Sunday\bin\Project.abs"
+PROGRAM "C:\Users\Jordan\Desktop\MiniPrj_S17\MiniPrj_S17\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -25,8 +25,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     288
-  _Copy    *toCopyDownBeg 0xC8DB
+  _Range   pZeroOut       0x900     253
+  _Copy    *toCopyDownBeg 0xCCC6
 } _startupData;
 
 *********************************************************************************************
@@ -35,11 +35,11 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata1                         137     R     0xC03B     0xC0C3   ROM_C000
-.text                           1706     R     0xC0C4     0xC76D   ROM_C000
-.copy                              7     R     0xC8DB     0xC8E1   ROM_C000
+.rodata1                         212     R     0xC03B     0xC10E   ROM_C000
+.text                           2614     R     0xC10F     0xCB44   ROM_C000
+.copy                             17     R     0xCCC6     0xCCD6   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
-.data                              4   R/W      0x900      0x903   RAM
+.data                             11   R/W      0x900      0x90A   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -263,14 +263,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
-.bss                              15   R/W      0x904      0x912   RAM
-.common                          269   R/W      0x913      0xA1F   RAM
-RUNTIME                          365     R     0xC76E     0xC8DA   ROM_C000
+.bss                              36   R/W      0x90B      0x92E   RAM
+.common                          206   R/W      0x92F      0x9FC   RAM
+RUNTIME                          385     R     0xCB45     0xCCC5   ROM_C000
 .vectSeg223_vect                   2     R     0xFFFE     0xFFFF   .vectSeg223
 
 Summary of section sizes per section type:
-READ_ONLY (R):         8E8 (dec:     2280)
-READ_WRITE (R/W):      220 (dec:      544)
+READ_ONLY (R):         CDD (dec:     3293)
+READ_WRITE (R/W):      1FD (dec:      509)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -331,13 +331,13 @@ MODULE:                 -- mc9s12c32.c.o --
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       0   .abs_section_4b
-     _TIE                                        4C       1       1       1   .abs_section_4c
+     _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       1   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
      _PACTL                                      60       1       1       0   .abs_section_60
      _PAFLG                                      61       1       1       0   .abs_section_61
-     _ATDSTAT0                                   86       1       1       1   .abs_section_86
+     _ATDSTAT0                                   86       1       1       2   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
      _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
      _ATDDIEN                                    8D       1       1       1   .abs_section_8d
@@ -353,7 +353,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _SPIBR                                      DA       1       1       1   .abs_section_da
      _SPISR                                      DB       1       1       2   .abs_section_db
      _SPIDR                                      DD       1       1       1   .abs_section_dd
-     _PWME                                       E0       1       1       2   .abs_section_e0
+     _PWME                                       E0       1       1       3   .abs_section_e0
      _PWMPOL                                     E1       1       1       1   .abs_section_e1
      _PWMCLK                                     E2       1       1       1   .abs_section_e2
      _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
@@ -425,7 +425,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXDSR7                                 17B       1       1       0   .abs_section_17b
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
-     _PTT                                       240       1       1      34   .abs_section_240
+     _PTT                                       240       1       1      26   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
      _DDRT                                      242       1       1       1   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
@@ -486,8 +486,8 @@ MODULE:                 -- mc9s12c32.c.o --
      _TC7                                        5E       2       2       1   .abs_section_5e
      _PACNT                                      62       2       2       0   .abs_section_62
      _ATDCTL23                                   82       2       2       2   .abs_section_82
-     _ATDCTL45                                   84       2       2       2   .abs_section_84
-     _ATDDR0                                     90       2       2       1   .abs_section_90
+     _ATDCTL45                                   84       2       2       3   .abs_section_84
+     _ATDDR0                                     90       2       2       2   .abs_section_90
      _ATDDR1                                     92       2       2       0   .abs_section_92
      _ATDDR2                                     94       2       2       0   .abs_section_94
      _ATDDR3                                     96       2       2       0   .abs_section_96
@@ -499,86 +499,107 @@ MODULE:                 -- mc9s12c32.c.o --
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       4   .abs_section_f2
+     _PWMPER01                                   F2       2       2      11   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
+     _PWMDTY01                                   F8       2       2      13   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C0C4      D9     217       1   .text       
-     main                                      C19D     131     305       9   .text       
-     RTI_ISR                                   C2CE      D7     215       1   .text       
-     TIM_ISR                                   C3A5      4B      75       1   .text       
-     selectDiff                                C3F0      70     112       1   .text       
-     dispround                                 C460      97     151       2   .text       
-     generateOrder                             C4F7      20      32       1   .text       
-     lightup                                   C517      6E     110       2   .text       
-     win                                       C585      4F      79       6   .text       
-     lose                                      C5D4      73     115       6   .text       
-     waitlevel                                 C647      49      73       2   .text       
-     shiftout                                  C690      14      20       1   .text       
-     lcdwait                                   C6A4       A      10       2   .text       
-     send_byte                                 C6AE      11      17       2   .text       
-     send_i                                    C6BF       7       7       8   .text       
-     chgline                                   C6C6       B      11      10   .text       
-     print_c                                   C6D1       7       7       7   .text       
-     pmsglcd                                   C6D8      24      36      10   .text       
+     initializations                           C10F      BA     186       1   .text       
+     main                                      C1C9     1C6     454      17   .text       
+     RTI_ISR                                   C38F      DD     221       1   .text       
+     TIM_ISR                                   C46C     169     361       3   .text       
+     selectDiff                                C5D5      8C     140       1   .text       
+     selectMode                                C661      53      83       1   .text       
+     dispround                                 C6B4      98     152       2   .text       
+     generateOrder                             C74C      29      41       2   .text       
+     lightup                                   C775      6E     110       2   .text       
+     win                                       C7E3      4A      74       6   .text       
+     lose                                      C82D      89     137       6   .text       
+     waitlevel                                 C8B6      4A      74       2   .text       
+     noteSpace                                 C900      1E      30       4   .text       
+     updateDisplay                             C91E     108     264      12   .text       
+     gameStart                                 CA26      38      56       2   .text       
+     shiftout                                  CA5E      14      20       1   .text       
+     lcdwait                                   CA72       A      10       3   .text       
+     send_byte                                 CA7C      11      17       2   .text       
+     send_i                                    CA8D       7       7      13   .text       
+     chgline                                   CA94       B      11      19   .text       
+     print_c                                   CA9F       7       7      18   .text       
+     pmsglcd                                   CAA6      24      36      22   .text       
 - VARIABLES:
-     STRING.Difficulty..1                      C03B       C      12       1   .rodata1    
-     STRING.WTF.2                              C047       4       4       1   .rodata1    
-     STRING.Pro.3                              C04B       4       4       1   .rodata1    
-     STRING.Shmedium.4                         C04F       9       9       1   .rodata1    
-     STRING.Amateur.5                          C058       8       8       1   .rodata1    
-     STRING.Chump.6                            C060       6       6       1   .rodata1    
-     STRING.Round...7                          C066       8       8       1   .rodata1    
-     STRING.Simon.Says....8                    C06E       E      14       1   .rodata1    
-     STRING..................9                 C07C      11      17       1   .rodata1    
-     STRING.Go..10                             C08D       4       4       1   .rodata1    
-     STRING..................11                C091      11      17       1   .rodata1    
-     STRING.Correct..12                        C0A2       9       9       1   .rodata1    
-     STRING.Game.Over..13                      C0AB       B      11       1   .rodata1    
-     STRING.Final.Score...14                   C0B6       E      14       1   .rodata1    
-     prev_difficulty                            904       1       1       2   .bss        
-     tenthflg                                   905       1       1       1   .bss        
-     secflg                                     906       1       1       1   .bss        
-     milli                                      907       1       1       3   .bss        
-     tenth                                      908       1       1       3   .bss        
-     tenthadder                                 909       1       1       3   .bss        
-     hundreds1                                  90A       1       1       2   .bss        
-     tens1                                      90B       1       1       2   .bss        
-     ones1                                      90C       1       1       2   .bss        
-     hundreds2                                  90D       1       1       2   .bss        
-     tens2                                      90E       1       1       2   .bss        
-     ones2                                      90F       1       1       2   .bss        
-     ind1                                       910       1       1       2   .bss        
-     ind2                                       911       1       1       2   .bss        
-     ind3                                       912       1       1       7   .bss        
+     STRING.YOU.LOSE..1                        C03B       A      10       1   .rodata1    
+     STRING.Score...2                          C045       8       8       1   .rodata1    
+     STRING.YOU.WIN..3                         C04D       9       9       1   .rodata1    
+     STRING.YOU.LOSE..4                        C056       A      10       1   .rodata1    
+     STRING.Score...5                          C060       8       8       1   .rodata1    
+     STRING.Difficulty..6                      C068       C      12       1   .rodata1    
+     STRING.WTF.7                              C074       4       4       1   .rodata1    
+     STRING.Pro.8                              C078       4       4       1   .rodata1    
+     STRING.Shmedium.9                         C07C       9       9       1   .rodata1    
+     STRING.Amateur.10                         C085       8       8       1   .rodata1    
+     STRING.Chump.11                           C08D       6       6       1   .rodata1    
+     STRING.Game..12                           C093       6       6       1   .rodata1    
+     STRING.Dodge.13                           C099       6       6       1   .rodata1    
+     STRING.Simon.14                           C09F       6       6       1   .rodata1    
+     STRING.Round...15                         C0A5       8       8       1   .rodata1    
+     STRING.Simon.Says....16                   C0AD       E      14       1   .rodata1    
+     STRING..................17                C0BB      11      17       1   .rodata1    
+     STRING.Go..18                             C0CC       4       4       1   .rodata1    
+     STRING..................19                C0D0      11      17       1   .rodata1    
+     STRING.Correct..20                        C0E1       9       9       1   .rodata1    
+     STRING.Game.Over..21                      C0EA       B      11       1   .rodata1    
+     STRING.Final.Score...22                   C0F5       E      14       1   .rodata1    
+     STRING.Starts.in...23                     C103       C      12       1   .rodata1    
+     modeselectflg                              900       1       1       2   .data       
+     prev_gamemode                              901       2       2       2   .data       
+     half_sequence                              903       2       2      10   .data       
+     prev_difficulty                            905       2       2       2   .data       
+     button1                                    90B       1       1       5   .bss        
+     button2                                    90C       1       1       5   .bss        
+     button3                                    90D       1       1       5   .bss        
+     button4                                    90E       1       1       5   .bss        
+     button5                                    90F       1       1       5   .bss        
+     button6                                    910       1       1       5   .bss        
+     startbutton                                911       1       1       5   .bss        
+     timer                                      912       2       2       6   .bss        
+     round                                      914       1       1       9   .bss        
+     guessround                                 915       1       1      10   .bss        
+     startflg                                   916       1       1       3   .bss        
+     playflg                                    917       1       1      10   .bss        
+     gamemode                                   918       1       1       7   .bss        
+     music_ind                                  919       1       1       3   .bss        
+     player_marker                              91A       2       2       8   .bss        
+     seq_position                               91C       2       2      10   .bss        
+     temp_seq                                   91E       2       2       5   .bss        
+     refreshrate                                920       2       2       2   .bss        
+     dodgetimer                                 922       2       2       4   .bss        
+     milli                                      924       1       1       3   .bss        
+     tenthadder                                 925       1       1      11   .bss        
+     tens1                                      926       1       1       2   .bss        
+     ones1                                      927       1       1       2   .bss        
+     tens2                                      928       1       1       2   .bss        
+     ones2                                      929       1       1       2   .bss        
+     ind1                                       92A       1       1       4   .bss        
+     ind2                                       92B       1       1       4   .bss        
+     ind3                                       92C       1       1       7   .bss        
+     ind4                                       92D       1       1       4   .bss        
+     start_ind                                  92E       1       1       4   .bss        
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
-     button1                                    913       1       1       4   .common     
-     button2                                    914       1       1       4   .common     
-     button3                                    915       1       1       4   .common     
-     button4                                    916       1       1       4   .common     
-     button5                                    917       1       1       4   .common     
-     button6                                    918       1       1       4   .common     
-     startbutton                                919       1       1       3   .common     
-     round                                      91A       1       1      13   .common     
-     guessround                                 91B       1       1       9   .common     
-     startflg                                   91C       1       1       3   .common     
-     playflg                                    91D       1       1      15   .common     
-     sequence                                   91E      FA     250       4   .common     
-     prev1                                      A18       1       1       2   .common     
-     prev2                                      A19       1       1       2   .common     
-     prev3                                      A1A       1       1       2   .common     
-     prev4                                      A1B       1       1       2   .common     
-     prev5                                      A1C       1       1       2   .common     
-     prev6                                      A1D       1       1       2   .common     
-     prevstart                                  A1E       1       1       2   .common     
-     difficulty                                 A1F       1       1       5   .common     
+     sequence                                   92F      C6     198       7   .common     
+     prev1                                      9F5       1       1       2   .common     
+     prev2                                      9F6       1       1       2   .common     
+     prev3                                      9F7       1       1       2   .common     
+     prev4                                      9F8       1       1       2   .common     
+     prev5                                      9F9       1       1       2   .common     
+     prev6                                      9FA       1       1       2   .common     
+     prevstart                                  9FB       1       1       2   .common     
+     difficulty                                 9FC       1       1       5   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -589,19 +610,21 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- STDLIB.C.o (ansisi.lib) --
 - PROCEDURES:
-     rand                                      C6FC      72     114       1   .text       
+     rand                                      CACA      72     114       1   .text       
+     srand                                     CB3C       9       9       1   .text       
 - VARIABLES:
-     seed                                       900       4       4      12   .data       
+     seed                                       907       4       4      14   .data       
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _BDIVMODU                                 C76E       A      10       2   RUNTIME     
-     _BDIVMODS                                 C778       B      11       4   RUNTIME     
-     _LNEG                                     C783       D      13       1   RUNTIME     
-     _LMULS16x32                               C790      1F      31       2   RUNTIME     
-     _lDivMod                                  C7AF      BE     190       4   RUNTIME     
-     _NEG_P                                    C86D       F      15       7   RUNTIME     
-     _LDIVS                                    C87C      35      53       1   RUNTIME     
-     _LMODS                                    C8B1      2A      42       1   RUNTIME     
+     _BDIVMODU                                 CB45       A      10       4   RUNTIME     
+     _BDIVMODS                                 CB4F       B      11       1   RUNTIME     
+     _LNEG                                     CB5A       D      13       1   RUNTIME     
+     _LMULS16x32                               CB67      1F      31       2   RUNTIME     
+     _lDivMod                                  CB86      BE     190       4   RUNTIME     
+     _NEG_P                                    CC44       F      15       7   RUNTIME     
+     _LDIVS                                    CC53      35      53       1   RUNTIME     
+     _LMODS                                    CC88      2A      42       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CCB2      14      20       1   RUNTIME     
 - VARIABLES:
 
 *********************************************************************************************
@@ -609,31 +632,36 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                   284   1592    141
+  main.c.o                                   249   2491    216
   Start12.c.o                                  0     49      0
-  STDLIB.C.o (ansisi.lib)                      4    114      0
-  rtshc12.c.o (ansisi.lib)                     0    365      0
-  other                                      256     12      7
+  STDLIB.C.o (ansisi.lib)                      4    123      0
+  rtshc12.c.o (ansisi.lib)                     0    385      0
+  other                                      256     12     17
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  initializations main RTI_ISR TIM_ISR selectDiff dispround generateOrder 
-  lightup win lose waitlevel shiftout lcdwait send_byte send_i chgline print_c 
-  pmsglcd rand 
+  initializations main RTI_ISR TIM_ISR selectDiff selectMode dispround 
+  generateOrder lightup win lose waitlevel noteSpace updateDisplay gameStart 
+  shiftout lcdwait send_byte send_i chgline print_c pmsglcd rand srand 
 SECTION: ".data"
-  seed 
+  modeselectflg prev_gamemode half_sequence prev_difficulty seed 
 SECTION: ".bss"
-  prev_difficulty tenthflg secflg milli tenth tenthadder hundreds1 tens1 ones1 
-  hundreds2 tens2 ones2 ind1 ind2 ind3 
+  button1 button2 button3 button4 button5 button6 startbutton timer round 
+  guessround startflg playflg gamemode music_ind player_marker seq_position 
+  temp_seq refreshrate dodgetimer milli tenthadder tens1 ones1 tens2 ones2 ind1 
+  ind2 ind3 ind4 start_ind 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".rodata1"
-  STRING.Difficulty..1 STRING.WTF.2 STRING.Pro.3 STRING.Shmedium.4 
-  STRING.Amateur.5 STRING.Chump.6 STRING.Round...7 STRING.Simon.Says....8 
-  STRING..................9 STRING.Go..10 STRING..................11 
-  STRING.Correct..12 STRING.Game.Over..13 STRING.Final.Score...14 
+  STRING.YOU.LOSE..1 STRING.Score...2 STRING.YOU.WIN..3 STRING.YOU.LOSE..4 
+  STRING.Score...5 STRING.Difficulty..6 STRING.WTF.7 STRING.Pro.8 
+  STRING.Shmedium.9 STRING.Amateur.10 STRING.Chump.11 STRING.Game..12 
+  STRING.Dodge.13 STRING.Simon.14 STRING.Round...15 STRING.Simon.Says....16 
+  STRING..................17 STRING.Go..18 STRING..................19 
+  STRING.Correct..20 STRING.Game.Over..21 STRING.Final.Score...22 
+  STRING.Starts.in...23 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1081,11 +1109,10 @@ SECTION: ".abs_section_fff0"
 SECTION: ".abs_section_ffe0"
   _Vector_15 
 SECTION: ".common"
-  button1 button2 button3 button4 button5 button6 startbutton round guessround 
-  startflg playflg sequence prev1 prev2 prev3 prev4 prev5 prev6 prevstart 
-  difficulty 
+  sequence prev1 prev2 prev3 prev4 prev5 prev6 prevstart difficulty 
 SECTION: "RUNTIME"
   _BDIVMODU _BDIVMODS _LNEG _LMULS16x32 _lDivMod _NEG_P _LDIVS _LMODS 
+  _CASE_CHECKED_BYTE 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1144,7 +1171,7 @@ OBJECT LIST SORTED BY ADDRESS
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       0   .abs_section_4b
-     _TIE                                        4C       1       1       1   .abs_section_4c
+     _TIE                                        4C       1       1       2   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       1   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
@@ -1160,13 +1187,13 @@ OBJECT LIST SORTED BY ADDRESS
      _PAFLG                                      61       1       1       0   .abs_section_61
      _PACNT                                      62       2       2       0   .abs_section_62
      _ATDCTL23                                   82       2       2       2   .abs_section_82
-     _ATDCTL45                                   84       2       2       2   .abs_section_84
-     _ATDSTAT0                                   86       1       1       1   .abs_section_86
+     _ATDCTL45                                   84       2       2       3   .abs_section_84
+     _ATDSTAT0                                   86       1       1       2   .abs_section_86
      _ATDTEST1                                   89       1       1       0   .abs_section_89
      _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
      _ATDDIEN                                    8D       1       1       1   .abs_section_8d
      _PORTAD0                                    8F       1       1       0   .abs_section_8f
-     _ATDDR0                                     90       2       2       1   .abs_section_90
+     _ATDDR0                                     90       2       2       2   .abs_section_90
      _ATDDR1                                     92       2       2       0   .abs_section_92
      _ATDDR2                                     94       2       2       0   .abs_section_94
      _ATDDR3                                     96       2       2       0   .abs_section_96
@@ -1186,7 +1213,7 @@ OBJECT LIST SORTED BY ADDRESS
      _SPIBR                                      DA       1       1       1   .abs_section_da
      _SPISR                                      DB       1       1       2   .abs_section_db
      _SPIDR                                      DD       1       1       1   .abs_section_dd
-     _PWME                                       E0       1       1       2   .abs_section_e0
+     _PWME                                       E0       1       1       3   .abs_section_e0
      _PWMPOL                                     E1       1       1       1   .abs_section_e1
      _PWMCLK                                     E2       1       1       1   .abs_section_e2
      _PWMPRCLK                                   E3       1       1       1   .abs_section_e3
@@ -1197,10 +1224,10 @@ OBJECT LIST SORTED BY ADDRESS
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
-     _PWMPER01                                   F2       2       2       4   .abs_section_f2
+     _PWMPER01                                   F2       2       2      11   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
+     _PWMDTY01                                   F8       2       2      13   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
@@ -1269,7 +1296,7 @@ OBJECT LIST SORTED BY ADDRESS
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
-     _PTT                                       240       1       1      34   .abs_section_240
+     _PTT                                       240       1       1      26   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
      _DDRT                                      242       1       1       1   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
@@ -1312,85 +1339,108 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     seed                                       900       4       4      12   .data       
-     prev_difficulty                            904       1       1       2   .bss        
-     tenthflg                                   905       1       1       1   .bss        
-     secflg                                     906       1       1       1   .bss        
-     milli                                      907       1       1       3   .bss        
-     tenth                                      908       1       1       3   .bss        
-     tenthadder                                 909       1       1       3   .bss        
-     hundreds1                                  90A       1       1       2   .bss        
-     tens1                                      90B       1       1       2   .bss        
-     ones1                                      90C       1       1       2   .bss        
-     hundreds2                                  90D       1       1       2   .bss        
-     tens2                                      90E       1       1       2   .bss        
-     ones2                                      90F       1       1       2   .bss        
-     ind1                                       910       1       1       2   .bss        
-     ind2                                       911       1       1       2   .bss        
-     ind3                                       912       1       1       7   .bss        
-     button1                                    913       1       1       4   .common     
-     button2                                    914       1       1       4   .common     
-     button3                                    915       1       1       4   .common     
-     button4                                    916       1       1       4   .common     
-     button5                                    917       1       1       4   .common     
-     button6                                    918       1       1       4   .common     
-     startbutton                                919       1       1       3   .common     
-     round                                      91A       1       1      13   .common     
-     guessround                                 91B       1       1       9   .common     
-     startflg                                   91C       1       1       3   .common     
-     playflg                                    91D       1       1      15   .common     
-     sequence                                   91E      FA     250       4   .common     
-     prev1                                      A18       1       1       2   .common     
-     prev2                                      A19       1       1       2   .common     
-     prev3                                      A1A       1       1       2   .common     
-     prev4                                      A1B       1       1       2   .common     
-     prev5                                      A1C       1       1       2   .common     
-     prev6                                      A1D       1       1       2   .common     
-     prevstart                                  A1E       1       1       2   .common     
-     difficulty                                 A1F       1       1       5   .common     
+     modeselectflg                              900       1       1       2   .data       
+     prev_gamemode                              901       2       2       2   .data       
+     half_sequence                              903       2       2      10   .data       
+     prev_difficulty                            905       2       2       2   .data       
+     seed                                       907       4       4      14   .data       
+     button1                                    90B       1       1       5   .bss        
+     button2                                    90C       1       1       5   .bss        
+     button3                                    90D       1       1       5   .bss        
+     button4                                    90E       1       1       5   .bss        
+     button5                                    90F       1       1       5   .bss        
+     button6                                    910       1       1       5   .bss        
+     startbutton                                911       1       1       5   .bss        
+     timer                                      912       2       2       6   .bss        
+     round                                      914       1       1       9   .bss        
+     guessround                                 915       1       1      10   .bss        
+     startflg                                   916       1       1       3   .bss        
+     playflg                                    917       1       1      10   .bss        
+     gamemode                                   918       1       1       7   .bss        
+     music_ind                                  919       1       1       3   .bss        
+     player_marker                              91A       2       2       8   .bss        
+     seq_position                               91C       2       2      10   .bss        
+     temp_seq                                   91E       2       2       5   .bss        
+     refreshrate                                920       2       2       2   .bss        
+     dodgetimer                                 922       2       2       4   .bss        
+     milli                                      924       1       1       3   .bss        
+     tenthadder                                 925       1       1      11   .bss        
+     tens1                                      926       1       1       2   .bss        
+     ones1                                      927       1       1       2   .bss        
+     tens2                                      928       1       1       2   .bss        
+     ones2                                      929       1       1       2   .bss        
+     ind1                                       92A       1       1       4   .bss        
+     ind2                                       92B       1       1       4   .bss        
+     ind3                                       92C       1       1       7   .bss        
+     ind4                                       92D       1       1       4   .bss        
+     start_ind                                  92E       1       1       4   .bss        
+     sequence                                   92F      C6     198       7   .common     
+     prev1                                      9F5       1       1       2   .common     
+     prev2                                      9F6       1       1       2   .common     
+     prev3                                      9F7       1       1       2   .common     
+     prev4                                      9F8       1       1       2   .common     
+     prev5                                      9F9       1       1       2   .common     
+     prev6                                      9FA       1       1       2   .common     
+     prevstart                                  9FB       1       1       2   .common     
+     difficulty                                 9FC       1       1       5   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     STRING.Difficulty..1                      C03B       C      12       1   .rodata1    
-     STRING.WTF.2                              C047       4       4       1   .rodata1    
-     STRING.Pro.3                              C04B       4       4       1   .rodata1    
-     STRING.Shmedium.4                         C04F       9       9       1   .rodata1    
-     STRING.Amateur.5                          C058       8       8       1   .rodata1    
-     STRING.Chump.6                            C060       6       6       1   .rodata1    
-     STRING.Round...7                          C066       8       8       1   .rodata1    
-     STRING.Simon.Says....8                    C06E       E      14       1   .rodata1    
-     STRING..................9                 C07C      11      17       1   .rodata1    
-     STRING.Go..10                             C08D       4       4       1   .rodata1    
-     STRING..................11                C091      11      17       1   .rodata1    
-     STRING.Correct..12                        C0A2       9       9       1   .rodata1    
-     STRING.Game.Over..13                      C0AB       B      11       1   .rodata1    
-     STRING.Final.Score...14                   C0B6       E      14       1   .rodata1    
-     initializations                           C0C4      D9     217       1   .text       
-     main                                      C19D     131     305       9   .text       
-     RTI_ISR                                   C2CE      D7     215       1   .text       
-     TIM_ISR                                   C3A5      4B      75       1   .text       
-     selectDiff                                C3F0      70     112       1   .text       
-     dispround                                 C460      97     151       2   .text       
-     generateOrder                             C4F7      20      32       1   .text       
-     lightup                                   C517      6E     110       2   .text       
-     win                                       C585      4F      79       6   .text       
-     lose                                      C5D4      73     115       6   .text       
-     waitlevel                                 C647      49      73       2   .text       
-     shiftout                                  C690      14      20       1   .text       
-     lcdwait                                   C6A4       A      10       2   .text       
-     send_byte                                 C6AE      11      17       2   .text       
-     send_i                                    C6BF       7       7       8   .text       
-     chgline                                   C6C6       B      11      10   .text       
-     print_c                                   C6D1       7       7       7   .text       
-     pmsglcd                                   C6D8      24      36      10   .text       
-     rand                                      C6FC      72     114       1   .text       
-     _BDIVMODU                                 C76E       A      10       2   RUNTIME     
-     _BDIVMODS                                 C778       B      11       4   RUNTIME     
-     _LNEG                                     C783       D      13       1   RUNTIME     
-     _LMULS16x32                               C790      1F      31       2   RUNTIME     
-     _lDivMod                                  C7AF      BE     190       4   RUNTIME     
-     _NEG_P                                    C86D       F      15       7   RUNTIME     
-     _LDIVS                                    C87C      35      53       1   RUNTIME     
-     _LMODS                                    C8B1      2A      42       1   RUNTIME     
+     STRING.YOU.LOSE..1                        C03B       A      10       1   .rodata1    
+     STRING.Score...2                          C045       8       8       1   .rodata1    
+     STRING.YOU.WIN..3                         C04D       9       9       1   .rodata1    
+     STRING.YOU.LOSE..4                        C056       A      10       1   .rodata1    
+     STRING.Score...5                          C060       8       8       1   .rodata1    
+     STRING.Difficulty..6                      C068       C      12       1   .rodata1    
+     STRING.WTF.7                              C074       4       4       1   .rodata1    
+     STRING.Pro.8                              C078       4       4       1   .rodata1    
+     STRING.Shmedium.9                         C07C       9       9       1   .rodata1    
+     STRING.Amateur.10                         C085       8       8       1   .rodata1    
+     STRING.Chump.11                           C08D       6       6       1   .rodata1    
+     STRING.Game..12                           C093       6       6       1   .rodata1    
+     STRING.Dodge.13                           C099       6       6       1   .rodata1    
+     STRING.Simon.14                           C09F       6       6       1   .rodata1    
+     STRING.Round...15                         C0A5       8       8       1   .rodata1    
+     STRING.Simon.Says....16                   C0AD       E      14       1   .rodata1    
+     STRING..................17                C0BB      11      17       1   .rodata1    
+     STRING.Go..18                             C0CC       4       4       1   .rodata1    
+     STRING..................19                C0D0      11      17       1   .rodata1    
+     STRING.Correct..20                        C0E1       9       9       1   .rodata1    
+     STRING.Game.Over..21                      C0EA       B      11       1   .rodata1    
+     STRING.Final.Score...22                   C0F5       E      14       1   .rodata1    
+     STRING.Starts.in...23                     C103       C      12       1   .rodata1    
+     initializations                           C10F      BA     186       1   .text       
+     main                                      C1C9     1C6     454      17   .text       
+     RTI_ISR                                   C38F      DD     221       1   .text       
+     TIM_ISR                                   C46C     169     361       3   .text       
+     selectDiff                                C5D5      8C     140       1   .text       
+     selectMode                                C661      53      83       1   .text       
+     dispround                                 C6B4      98     152       2   .text       
+     generateOrder                             C74C      29      41       2   .text       
+     lightup                                   C775      6E     110       2   .text       
+     win                                       C7E3      4A      74       6   .text       
+     lose                                      C82D      89     137       6   .text       
+     waitlevel                                 C8B6      4A      74       2   .text       
+     noteSpace                                 C900      1E      30       4   .text       
+     updateDisplay                             C91E     108     264      12   .text       
+     gameStart                                 CA26      38      56       2   .text       
+     shiftout                                  CA5E      14      20       1   .text       
+     lcdwait                                   CA72       A      10       3   .text       
+     send_byte                                 CA7C      11      17       2   .text       
+     send_i                                    CA8D       7       7      13   .text       
+     chgline                                   CA94       B      11      19   .text       
+     print_c                                   CA9F       7       7      18   .text       
+     pmsglcd                                   CAA6      24      36      22   .text       
+     rand                                      CACA      72     114       1   .text       
+     srand                                     CB3C       9       9       1   .text       
+     _BDIVMODU                                 CB45       A      10       4   RUNTIME     
+     _BDIVMODS                                 CB4F       B      11       1   RUNTIME     
+     _LNEG                                     CB5A       D      13       1   RUNTIME     
+     _LMULS16x32                               CB67      1F      31       2   RUNTIME     
+     _lDivMod                                  CB86      BE     190       4   RUNTIME     
+     _NEG_P                                    CC44       F      15       7   RUNTIME     
+     _LDIVS                                    CC53      35      53       1   RUNTIME     
+     _LMODS                                    CC88      2A      42       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        CCB2      14      20       1   RUNTIME     
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
 
@@ -1401,14 +1451,15 @@ NOT USED PROCEDURES
 STDLIB.C.o (ansisi.lib):
   atexit getenv system mblen mbtowc wctomb mbstowcs wcstombs CheckCharWithBase 
   _strtoul strtoul _strtol strtol _itoa bsearch swap qsort div ldiv abs labs 
-  srand 
 rtshc12.c.o (ansisi.lib):
   _BSHL _BSHRS _BSHRU _ISHL _ISHRU _ISHRS _LSHL _LSHRU _LSHRS _LADD _LSUB 
   _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LCOM _LINC _LDEC _LMUL _LMULU16x32 
   _LDIVU _LMODU _ILSEXT _COPY _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED 
-  _CASE_CHECKED_BYTE _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
-  _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
+  _FPCMP 
 NOT USED VARIABLES
+main.c.o:
+  tenthflg secflg tenth 
 STDLIB.C.o (ansisi.lib):
   channels errno 
 rtshc12.c.o (ansisi.lib):
@@ -1417,13 +1468,31 @@ rtshc12.c.o (ansisi.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC8DB ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xCCC6 ---- SIZE       4 ---
 Filling bytes inserted
- 00010903
-------- ROM-ADDRESS: 0xC8DF ---- RAM-ADDRESS: 0x903 ---- SIZE       1 ---
+ 000B0900
+------- ROM-ADDRESS: 0xCCCA ---- RAM-ADDRESS: 0x900 ---- SIZE       1 ---
+Name of initialized Object : modeselectflg
+ 01
+------- ROM-ADDRESS: 0xCCCB ---- RAM-ADDRESS: 0x901 ---- SIZE       2 ---
+Name of initialized Object : prev_gamemode
+ 012C
+------- ROM-ADDRESS: 0xCCCD ---- SIZE       1 ---
+Filling bytes inserted
+ 00
+------- ROM-ADDRESS: 0xCCCE ---- RAM-ADDRESS: 0x904 ---- SIZE       1 ---
+Name of initialized Object : half_sequence:1
+ 01
+------- ROM-ADDRESS: 0xCCCF ---- RAM-ADDRESS: 0x905 ---- SIZE       2 ---
+Name of initialized Object : prev_difficulty
+ 012C
+------- ROM-ADDRESS: 0xCCD1 ---- SIZE       3 ---
+Filling bytes inserted
+ 000000
+------- ROM-ADDRESS: 0xCCD4 ---- RAM-ADDRESS: 0x90A ---- SIZE       1 ---
 Name of initialized Object : seed:3
  01
-------- ROM-ADDRESS: 0xC8E0 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xCCD5 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1437,34 +1506,50 @@ initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL
                                 _SPICR1 _SPICR2 _SPISR _DDRT _ATDDIEN _TSCR1 _TIOS 
                                 _TSCR2 _TC7 _TIE _PWME _PWMPOL _PWMCLK _PWMPRCLK 
                                 _PWMSCLA _PWMPER01 _PWMDTY01 _MODRR _ATDCTL23 _ATDCTL45 
-                                _CRGINT _RTICTL _PTM send_i lcdwait _PTT startflg 
-                                playflg button1 button2 button3 button4 button5 
-                                button6 startbutton round guessround 
-main                      USES initializations main button1 playflg sequence 
-                                round win guessround lose button2 button3 button4 
-                                button5 button6 lightup 
-RTI_ISR                   USES _CRGFLG _PTAD prev1 button1 prev2 button2 prev3 
-                                button3 prev4 button4 prev5 button5 prev6 button6 
-                                prevstart startbutton 
-TIM_ISR                   USES _TFLG1 milli tenth tenthflg secflg tenthadder 
-                                startflg selectDiff startbutton round generateOrder 
-                                dispround playflg _PWME 
+                                _CRGINT _RTICTL _PTM send_i lcdwait _PTT 
+main                      USES initializations main playflg gamemode button1 
+                                sequence win guessround lose button2 button3 button4 
+                                button5 button6 player_marker updateDisplay _PWMDTY01 
+                                half_sequence seq_position send_i chgline STRING.YOU.LOSE..1 
+                                pmsglcd STRING.Score...2 print_c _PTT _PWMPER01 
+                                noteSpace round lightup 
+RTI_ISR                   USES _CRGFLG playflg _PTAD prev1 button1 prev2 
+                                button2 prev3 button3 prev4 button4 prev5 button5 
+                                prev6 button6 prevstart startbutton 
+TIM_ISR                   USES _TFLG1 milli tenthadder timer playflg gamemode 
+                                dodgetimer music_ind _CASE_CHECKED_BYTE _PWMPER01 
+                                _PWMDTY01 refreshrate half_sequence seq_position TIM_ISR 
+                                STRING.YOU.WIN..3 pmsglcd updateDisplay sequence player_marker 
+                                STRING.YOU.LOSE..4 chgline STRING.Score...5 print_c _PTT startflg 
+                                selectDiff startbutton round generateOrder dispround 
+                                gameStart modeselectflg selectMode noteSpace send_i 
 selectDiff                USES _ATDCTL45 _ATDSTAT0 _ATDDR0 difficulty 
-                                prev_difficulty _BDIVMODU send_i chgline STRING.Difficulty..1 
-                                pmsglcd STRING.WTF.2 STRING.Pro.3 STRING.Shmedium.4 
-                                STRING.Amateur.5 STRING.Chump.6 
-dispround                 USES send_i chgline STRING.Round...7 pmsglcd round 
-                                hundreds1 tens1 ones1 print_c STRING.Simon.Says....8 
-                                sequence lightup waitlevel ind1 
-                                STRING..................9 STRING.Go..10 
-generateOrder             USES rand sequence ind2 
+                                prev_difficulty _BDIVMODU send_i chgline STRING.Difficulty..6 
+                                pmsglcd STRING.WTF.7 STRING.Pro.8 STRING.Shmedium.9 
+                                STRING.Amateur.10 STRING.Chump.11 refreshrate 
+selectMode                USES _ATDCTL45 _ATDSTAT0 _ATDDR0 gamemode 
+                                prev_gamemode _BDIVMODU send_i chgline STRING.Game..12 
+                                pmsglcd STRING.Dodge.13 STRING.Simon.14 
+dispround                 USES round gameStart send_i chgline 
+                                STRING.Round...15 pmsglcd tens1 ones1 print_c 
+                                STRING.Simon.Says....16 ind1 sequence lightup waitlevel 
+                                STRING..................17 STRING.Go..18 guessround playflg 
+generateOrder             USES ind2 timer srand rand sequence 
 lightup                   USES _PTT _PWMPER01 _PWMDTY01 waitlevel 
-win                       USES chgline STRING..................11 pmsglcd 
-                                STRING.Correct..12 _PTT round guessround dispround 
-lose                      USES send_i chgline STRING.Game.Over..13 pmsglcd 
-                                _PTT STRING.Final.Score...14 round _BDIVMODS 
-                                hundreds2 tens2 ones2 print_c 
+win                       USES playflg chgline STRING..................19 
+                                pmsglcd STRING.Correct..20 tenthadder round guessround 
+                                dispround _PWMPER01 _PWMDTY01 noteSpace 
+lose                      USES playflg send_i chgline STRING.Game.Over..21 
+                                pmsglcd _PTT _PWMPER01 _PWMDTY01 tenthadder 
+                                STRING.Final.Score...22 round _BDIVMODU _BDIVMODS tens2 ones2 print_c 
+                                noteSpace 
 waitlevel                 USES difficulty ind3 tenthadder 
+noteSpace                 USES tenthadder _PWME 
+updateDisplay             USES temp_seq send_i chgline half_sequence 
+                                updateDisplay print_c ind4 player_marker seq_position 
+                                sequence 
+gameStart                 USES start_ind send_i chgline lcdwait 
+                                STRING.Starts.in...23 pmsglcd print_c timer 
 shiftout                  USES _SPISR _SPIDR 
 send_byte                 USES shiftout _PTM lcdwait 
 send_i                    USES _PTM send_byte 
@@ -1472,6 +1557,7 @@ chgline                   USES send_i
 print_c                   USES _PTM send_byte 
 pmsglcd                   USES print_c 
 rand                      USES seed _LDIVS _LMODS _LMULS16x32 
+srand                     USES seed 
 _LMULS16x32               USES _LNEG 
 _LDIVS                    USES _NEG_P _lDivMod 
 _LMODS                    USES _NEG_P _lDivMod 
@@ -1510,21 +1596,35 @@ DEPENDENCY TREE
  |  |  |     +- send_byte            (see above)
  |  |  |        
  |  |  +- dispround           
- |  |     | 
- |  |     +- send_i               (see above)
- |  |     |  
- |  |     +- chgline              (see above)
- |  |     |  
- |  |     +- pmsglcd              (see above)
- |  |     |  
- |  |     +- print_c              (see above)
- |  |     |  
- |  |     +- lightup             
- |  |     |  | 
- |  |     |  +- waitlevel           
- |  |     |       
- |  |     +- waitlevel            (see above)
- |  |        
+ |  |  |  | 
+ |  |  |  +- gameStart           
+ |  |  |  |  | 
+ |  |  |  |  +- send_i               (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- chgline              (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- lcdwait              (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- pmsglcd              (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- print_c              (see above)
+ |  |  |  |     
+ |  |  |  +- send_i               (see above)
+ |  |  |  |  
+ |  |  |  +- chgline              (see above)
+ |  |  |  |  
+ |  |  |  +- pmsglcd              (see above)
+ |  |  |  |  
+ |  |  |  +- print_c              (see above)
+ |  |  |  |  
+ |  |  |  +- lightup             
+ |  |  |  |  | 
+ |  |  |  |  +- waitlevel           
+ |  |  |  |       
+ |  |  |  +- waitlevel            (see above)
+ |  |  |     
+ |  |  +- noteSpace           
+ |  |       
  |  +- lose                
  |  |  | 
  |  |  +- send_i               (see above)
@@ -1533,10 +1633,32 @@ DEPENDENCY TREE
  |  |  |  
  |  |  +- pmsglcd              (see above)
  |  |  |  
+ |  |  +- _BDIVMODU           
+ |  |  |    
  |  |  +- _BDIVMODS           
  |  |  |    
  |  |  +- print_c              (see above)
+ |  |  |  
+ |  |  +- noteSpace            (see above)
  |  |     
+ |  +- updateDisplay       
+ |  |  | 
+ |  |  +- send_i               (see above)
+ |  |  |  
+ |  |  +- chgline              (see above)
+ |  |  |  
+ |  |  +- print_c              (see above)
+ |  |     
+ |  +- send_i               (see above)
+ |  |  
+ |  +- chgline              (see above)
+ |  |  
+ |  +- pmsglcd              (see above)
+ |  |  
+ |  +- print_c              (see above)
+ |  |  
+ |  +- noteSpace            (see above)
+ |  |  
  |  +- lightup              (see above)
  |     
  +- _Startup            
@@ -1553,10 +1675,20 @@ DEPENDENCY TREE
  | 
  +- TIM_ISR             
     | 
+    +- _CASE_CHECKED_BYTE  
+    |    
+    +- pmsglcd              (see above)
+    |  
+    +- updateDisplay        (see above)
+    |  
+    +- chgline              (see above)
+    |  
+    +- print_c              (see above)
+    |  
     +- selectDiff          
     |  | 
-    |  +- _BDIVMODU           
-    |  |    
+    |  +- _BDIVMODU            (see above)
+    |  |  
     |  +- send_i               (see above)
     |  |  
     |  +- chgline              (see above)
@@ -1565,6 +1697,8 @@ DEPENDENCY TREE
     |     
     +- generateOrder       
     |  | 
+    |  +- srand               
+    |  |    
     |  +- rand                
     |     | 
     |     +- _LDIVS              
@@ -1584,6 +1718,22 @@ DEPENDENCY TREE
     |        +- _LNEG               
     |             
     +- dispround            (see above)
+    |  
+    +- gameStart            (see above)
+    |  
+    +- selectMode          
+    |  | 
+    |  +- _BDIVMODU            (see above)
+    |  |  
+    |  +- send_i               (see above)
+    |  |  
+    |  +- chgline              (see above)
+    |  |  
+    |  +- pmsglcd              (see above)
+    |     
+    +- noteSpace            (see above)
+    |  
+    +- send_i               (see above)
        
 *********************************************************************************************
 STATISTIC SECTION
@@ -1591,6 +1741,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 2280
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 3293
 

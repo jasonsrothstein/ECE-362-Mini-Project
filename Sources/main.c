@@ -1,3 +1,67 @@
+/*
+************************************************************************
+ ECE 362 - Mini-Project C Source File - Spring 2017
+***********************************************************************
+	 	   			 		  			 		  		
+ Team ID: < Team 28 >
+
+ Project Name: < Game Box >
+
+ Team Members:
+
+   - Team/Doc Leader: < Jason Rothstein >      Signature: ______Jason Rothstein________________
+   
+   - Software Leader: < Everyone :) >      Signature: _______Everyone_______________
+
+   - Interface Leader: < David Pimley >     Signature: _____David Pimley_________________
+
+   - Peripheral Leader: < Jordan Warne >    Signature: ______Jordan Warne________________
+
+
+ Academic Honesty Statement:  In signing above, we hereby certify that we 
+ are the individuals who created this HC(S)12 source file and that we have
+ not copied the work of any other student (past or present) while completing 
+ it. We understand that if we fail to honor this agreement, we will receive 
+ a grade of ZERO and be subject to possible disciplinary action.
+
+***********************************************************************
+
+ The objective of this Mini-Project is to .... < Utilize a Freescale 9S12 microcontroller's peripherals to create a game box.
+ The original scope of this project was to create a game of Simon Says, where the player is tasked with repeating a sequence of lights.
+ Later, an additional game was added in which the player must dodge obstacles that move accross an LCD screen. >
+
+
+***********************************************************************
+
+ List of project-specific success criteria (functionality that will be
+ demonstrated):
+
+ 1.  It should be fun to play
+
+ 2.  It should have various levels of difficulty
+
+ 3.  There should be multiple games to play
+
+ 4.  It should be well packaged and visually pleasing
+
+ 5.  It should be user friendly
+
+***********************************************************************
+
+  Date code started: < Saturday, December 2, 2017 >
+
+  Update history (add an entry every time a significant change is made):
+
+  Date: < Sunday, December 3, 2017 >  Name: < Jason Rothstein >   Update: < Original Rough Draft >
+
+  Date: < Monday, December 4, 2017 >  Name: < Everyone >   Update: < Debugging Simon Game, Added sounds, Changed timer interrupts for game difficulties.  Working prototype finished and running on breadboard >
+
+  Date: < Tuesday, December 5, 2017 >  Name: < Jordan Warne >   Update: < Started adding a second game (Dodge).  Works though difficulty select, game play unfinished >
+  
+  Date: < Wednesday, December 6, 2017 > Name: < David Pimley, Jordan Warne  >  Update: < Debugged and finished second game (Dodge) with accompanying sound. >
+
+***********************************************************************
+*/
 /*******************************************************************
 ECE 362 MINI PROJECT CODE
 JASON ROTHSTEIN, JORDAN WARNE, DAVID PIMLEY
@@ -61,6 +125,8 @@ unsigned char modeselectflg = 1;
 unsigned char gamemode = 0; //0-128 = Simon; 128-256 = Reaction.
 unsigned int prev_gamemode = 300;
 int sequence[99];
+
+unsigned char music_ind = 0;
                                       
 unsigned int player_marker = 0;
 unsigned int half_sequence = 1;
@@ -376,6 +442,44 @@ void main(void) {
           
           player_marker = (player_marker + 1) % 2; //toggle player_marker marker
           updateDisplay(); //Update the  display with the new player's position.
+          
+          //Play tone
+          PWMPER0 = 2;
+          PWMDTY0 = 1;
+          noteSpace();
+          PWMDTY0 = 0;
+          
+          if(!half_sequence && (player_marker == sequence[seq_position] / 3)) {  //If the player got hit by a block,
+            playflg = 0; //Stop the game
+            send_i(LCDCLR);  //Print losing message.
+            chgline(LINE1);
+            pmsglcd("YOU LOSE!");
+            chgline(LINE2);
+            pmsglcd("Score: ");
+            print_c((seq_position / 10) + 48);
+            print_c((seq_position % 10) + 48);
+            
+            LED2 = LED_ON;  //CHANGE HERE - only want RED lights to light up when you lose
+            LED5 = LED_ON;
+            //Play Lose Song
+            PWMPER0 = 6;
+            PWMDTY0 = 3;
+            noteSpace();
+            PWMPER0 = 6;
+            PWMDTY0 = 3;
+            noteSpace();
+            PWMPER0 = 8;
+            PWMDTY0 = 4;
+            noteSpace();
+            PWMPER0 = 10;
+            PWMDTY0 = 5;
+            noteSpace();
+            PWMPER0 = 12;
+            PWMDTY0 = 6;
+            noteSpace();
+            PWMPER0 = 0;
+            PWMDTY0 = 0;         
+          }
         }
       }
       
@@ -462,6 +566,31 @@ interrupt 15 void TIM_ISR(void)
   //Dodging game control
   if(playflg && gamemode > 128) {  //If playing the Dodging game:
    	dodgetimer++;
+    if (timer % 500 == 0){
+      switch (music_ind){
+        case 0:
+          PWMPER0 = 22;
+          PWMDTY0 = 11;
+          music_ind++;
+          break;
+        case 1:
+          PWMPER0 = 22;
+          PWMDTY0 = 11;
+          music_ind++;
+          break;
+        case 2:
+          PWMPER0 = 18;
+          PWMDTY0 = 9;
+          music_ind++;
+          break;
+        case 3:
+          PWMPER0 = 14;
+          PWMDTY0 = 7;
+          music_ind = 0;
+          break;
+      }
+        
+    }
     if((dodgetimer == refreshrate)) { //If the game is running and it is time to shift the obstacles down:
    	  dodgetimer = 0;  //reset timer
    	  half_sequence = (half_sequence + 1) % 2;
@@ -480,6 +609,31 @@ interrupt 15 void TIM_ISR(void)
           send_i(LCDCLR);  //Print losing message.
           chgline(LINE1);
           pmsglcd("YOU LOSE!");
+          chgline(LINE2);
+          pmsglcd("Score: ");
+          print_c((seq_position / 10) + 48);
+          print_c((seq_position % 10) + 48);
+          
+          LED2 = LED_ON;  //CHANGE HERE - only want RED lights to light up when you lose
+          LED5 = LED_ON;
+          //Play Lose Song
+          PWMPER0 = 6;
+          PWMDTY0 = 3;
+          noteSpace();
+          PWMPER0 = 6;
+          PWMDTY0 = 3;
+          noteSpace();
+          PWMPER0 = 8;
+          PWMDTY0 = 4;
+          noteSpace();
+          PWMPER0 = 10;
+          PWMDTY0 = 5;
+          noteSpace();
+          PWMPER0 = 12;
+          PWMDTY0 = 6;
+          noteSpace();
+          PWMPER0 = 0;
+          PWMDTY0 = 0;         
         }
       }
    	}
